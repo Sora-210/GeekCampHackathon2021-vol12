@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { MessageResponse } from '../interface/MessageResponse'
 import { DB } from '../db'
+import { tokenAuth } from '../function/Auth'
 
 const UsersRouter:Router = Router()
 
@@ -22,20 +23,17 @@ UsersRouter.get('/', async (req, res) => {
         limit: limit,
         offset: offset
     }
-
     const Users = await DB.Users.findAll(options);
     res.status(200).json(Users)
 })
 UsersRouter.post('/', async (req, res) => {
     let data = {
         name: "",
-        email: "",
-        password: ""
+        uid: "",
     }
     data.name = (req.body.name == null ? null : String(req.body.name))
-    data.email = (req.body.email == null ? null : String(req.body.email))
-    data.password = (req.body.password == null ? null : String(req.body.password))
-    if (data.name && data.email && data.password) {
+    data.uid = (req.body.uid == null ? null : String(req.body.uid))
+    if (data.name && data.uid) {
         const dbRes = await DB.Users.create(data)
         res.status(200).json(dbRes)
     } else {
@@ -64,42 +62,64 @@ UsersRouter.get('/:userId', async (req, res) => {
     }
     
 })
+
+UsersRouter.use(tokenAuth)
 UsersRouter.patch('/:userId', async (req, res) => {
     let data = {
-        name: "",
-        email: "",
-        password: ""
+        name: ""
     }
     data.name = (req.body.name == null ? undefined : String(req.body.name))
-    data.email = (req.body.email == null ? undefined : String(req.body.email))
-    data.password = (req.body.password == null ? undefined : String(req.body.password))
-    if ((data.name || data.email || data.password) && req.params.userId != null) {
-        const options = {
-            where: {
-                id: req.params.userId
-            }
-        }
-        const dbRes = await DB.Users.update(data, options)
-        if (dbRes[0]) {
-            const User = await DB.Users.findOne(options)
-            res.status(200).json(User)
-        }
-    } else {
+    if (!data.name && req.params.userId != null) {
         const resMes: MessageResponse = {
             status: "Error",
             message: "Not Enogth Property"
         }
-        res.status(403).json(resMes)
+        res.status(402).json(resMes)
+        return 0
     }
-})
-UsersRouter.delete('/:userId', async (req, res) => {
-    const options = {
+    if (req.uid !== req.params.userId) {
+        const resMes: MessageResponse = {
+            status: "Error",
+            message: "Not Enogth Authority"
+        }
+        res.status(403).json(resMes)
+        return 0
+    }
+    const dbRes = await DB.Users.update(data, {
         where: {
             id: req.params.userId
         }
+    })
+    const User = await DB.Users.findOne({
+        where: {
+            id: req.params.userId
+        }
+    })
+    res.status(200).json(User)
+})
+UsersRouter.delete('/:userId', async (req, res) => {
+    if (!req.params.userId) {
+        const resMes: MessageResponse = {
+            status: "Error",
+            message: "Not Enogth Property"
+        }
+        res.status(402).json(resMes)
+        return 0
     }
-    const dbRes = await DB.Users.destroy(options)
-    res.status(200).json(dbRes)
+    if (req.uid !== req.params.userId) {
+        const resMes: MessageResponse = {
+            status: "Error",
+            message: "Not Enogth Authority"
+        }
+        res.status(403).json(resMes)
+        return 0
+    }
+    const resDB = DB.Users.destroy({
+        where: {
+            id: req.uid,
+        }
+    })
+    res.status(200).json(resDB)
 })
 
 //=====================================
