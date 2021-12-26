@@ -20,6 +20,6 @@ jobs:
             HostName hackathonv12.sora210.dev
             User hackathonv12
             IdentityFile ~/.ssh/hackathonV12_id_rsa
-    - name: run remote script
+    - name: run remote deploy script
       run: |
         ssh server "cd dev/hackathon_geekcamp_vol12 && git checkout dev && git pull origin dev && docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml down && docker-compose -f docker-compose.dev.yml up -d"
