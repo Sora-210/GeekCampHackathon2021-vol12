@@ -28,9 +28,6 @@ app.use(cors())
 import { UsersRouter } from './Router/Users'
 app.use('/users', UsersRouter)
 
-import { SUsersRouter } from './Router/SUsers'
-app.use('/s/users', SUsersRouter)
-
 import { TargetsRouter } from './Router/Targets'
 app.use('/targets', TargetsRouter)
 

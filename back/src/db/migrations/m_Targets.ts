@@ -11,7 +11,7 @@ const TargetsTableQuery = {
             },
             userId: {
                 allowNull: false,
-                type: DataTypes.INTEGER
+                type: DataTypes.STRING
             },
             title: {
                 allowNull: false,

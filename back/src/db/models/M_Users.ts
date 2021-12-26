@@ -2,11 +2,8 @@ import { Model, DataTypes } from 'sequelize'
 import { db } from '../instance'
 
 class Users extends Model {
-    public readonly id:number
+    public id: string
     public name: string
-    public email: string
-    public password: string
-    public token: string
     public createdAt: Date
     public updatedAt: Date
 }
@@ -14,24 +11,11 @@ class Users extends Model {
 Users.init({
     id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     },
     name: {
         allowNull: false,
-        type: DataTypes.STRING
-    },
-    email: {
-        allowNull: false,
-        type: DataTypes.STRING
-    },
-    password: {
-        allowNull: true,
-        type: DataTypes.STRING
-    },
-    token: {
-        allowNull: true,
         type: DataTypes.STRING
     },
     createdAt: {
