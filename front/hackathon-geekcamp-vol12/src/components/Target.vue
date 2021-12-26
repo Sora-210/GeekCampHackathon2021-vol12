@@ -1,15 +1,11 @@
 <template>
-  <div>
-    <!-- 目標の説明 -->
-    <v-card>
-
-    </v-card>
-
-    <!-- 進捗パネルの表示をここに追加 -->
-
-    <!-- 投稿ログの表示 -->
-    <div :class="[`text-h5`, `my-100`, `black--text`]" v-text="'ログ'"></div>
     <v-container class="py-8 px-6" fluid>
+      <!-- 目標の説明 -->
+      <div :class="[`text-h5`, `black--text`]" v-text="'ログ'"></div>
+
+      <!-- 進捗パネルの表示をここに追加 -->
+
+      <!-- 投稿ログの表示 -->
       <v-row>
         <v-col>
           <v-list two-line>
@@ -29,8 +25,6 @@
         </v-col>
       </v-row>
     </v-container>
-
-  </div>
 </template>
 
 <script>
