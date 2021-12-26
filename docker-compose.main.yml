@@ -1,0 +1,27 @@
+version: '2.2'
+services:
+  api:
+    build: ./back/.
+    ports:
+      - 9090:9090
+    networks:
+      mylogNetWork:
+        ipv4_address: 172.0.10.3
+  db:
+    image: mysql:8.0.21
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: mylog
+      MYSQL_ROOT_Host: api
+    volumes:
+      - ./Data/DB:/var/lib/mysql
+    networks:
+      mylogNetWork:
+          ipv4_address: 172.0.10.4
+networks:
+  mylogNetWork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.0.10.0/24
