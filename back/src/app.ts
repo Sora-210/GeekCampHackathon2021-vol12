@@ -1,1 +1,4 @@
-console.log("firstFile")
+import { auth } from './db/index'
+
+//DataBaseSetting
+auth()
