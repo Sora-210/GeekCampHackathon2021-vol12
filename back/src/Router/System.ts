@@ -31,17 +31,6 @@ SystemRouter.get('/health', (req, res) => {
     }
     res.status(200).json(resMes)
 })
-
-SystemRouter.post('/login', (req, res) => {
-    res.status(200).json({"path":"[post]/login"})
-})
-SystemRouter.patch('/login', (req, res) => {
-    res.status(200).json({"path":"[patch]/login"})
-})
-SystemRouter.delete('/logout', (req, res) => {
-    res.status(200).json({"path":"[delete]/logout"})
-})
-
 //=====================================
 export {
     SystemRouter
