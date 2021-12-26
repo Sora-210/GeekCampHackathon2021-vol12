@@ -3,7 +3,7 @@ import { db } from '../instance';
 
 class Targets extends Model {
     public readonly id: number
-    public userId: number
+    public userId: string
     public title: string
     public completed: boolean
     public readonly createdAt: Date
@@ -19,7 +19,7 @@ Targets.init({
     },
     userId: {
         allowNull: false,
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     },
     title: {
         allowNull: false,

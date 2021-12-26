@@ -1,3 +1,5 @@
+import { MessageResponse } from '../interface/MessageResponse'
+import { VERSION, START_TIME } from '../app'
 import { Router } from 'express'
 
 const SystemRouter:Router = Router()
@@ -14,22 +16,21 @@ delete /logout
 //=====================================
 
 SystemRouter.get('/version', (req, res) => {
-    res.status(200).json({"path":"[get]/version"})
+    const resMes: MessageResponse = {
+        status: "ok",
+        message: VERSION
+    }
+    res.status(200).json(resMes)
 })
 SystemRouter.get('/health', (req, res) => {
-    res.status(200).json({"path":"[get]/health"})
+    const resMes: MessageResponse = {
+        status: "ok",
+        message: {
+            startTime: START_TIME
+        }
+    }
+    res.status(200).json(resMes)
 })
-
-SystemRouter.post('/login', (req, res) => {
-    res.status(200).json({"path":"[post]/login"})
-})
-SystemRouter.patch('/login', (req, res) => {
-    res.status(200).json({"path":"[patch]/login"})
-})
-SystemRouter.delete('/logout', (req, res) => {
-    res.status(200).json({"path":"[delete]/logout"})
-})
-
 //=====================================
 export {
     SystemRouter
