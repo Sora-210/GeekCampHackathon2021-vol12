@@ -75,7 +75,14 @@
               </v-btn>
             </v-list-item-title></v-list-item-content>
           </v-list-item>
-
+          <v-btn
+                elevation="2"
+                color="primary"
+                outlined
+                @click="token"
+              >
+                token
+              </v-btn>
         </v-list>
       </v-navigation-drawer>
 
@@ -120,6 +127,11 @@ export default {
           this.$store.commit('deleteUser')
           console.log('logout success')
         })
+    },
+    token: async function () {
+      // トークン取得例
+      const token = await getAuth().currentUser.getIdToken()
+      console.log(token)
     }
   }
 
