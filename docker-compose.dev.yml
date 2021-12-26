@@ -18,6 +18,13 @@ services:
     networks:
       mylogNetWork:
           ipv4_address: 172.0.11.4
+  front:
+    build: ./front/.
+    ports:
+      - 9001:80
+    networks:
+      mylogNetWork:
+        ipv4_address: 172.0.11.5
 networks:
   mylogNetWork:
     driver: bridge
