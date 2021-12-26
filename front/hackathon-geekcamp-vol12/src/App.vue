@@ -46,6 +46,12 @@
             </v-list-item-title></v-list-item-content>
           </v-list-item>
 
+          <v-list-item>
+            <v-list-item-content><v-list-item-title>
+              <router-link :to="{name: 'Login'}" class="signup-link">Login</router-link>
+            </v-list-item-title></v-list-item-content>
+          </v-list-item>
+
         </v-list>
       </v-navigation-drawer>
 
@@ -67,7 +73,7 @@ export default {
   data: () => ({
     id: 123,
     drawer: null,
-    links: [['mdi-home', 'タイムライン', 'Top'], ['mdi-bullseye-arrow', '目標', 'Target'], ['mdi-magnify', '検索', 'Search'], ['mdi-cog-outline', '設定', 'Setting'], ['mdi-wrench', 'システム', 'System']]
+    links: [['mdi-home', 'タイムライン', 'Home'], ['mdi-bullseye-arrow', '目標', 'Target'], ['mdi-magnify', '検索', 'Search'], ['mdi-cog-outline', '設定', 'Setting'], ['mdi-wrench', 'システム', 'System']]
   })
 
 }
