@@ -9,7 +9,7 @@ auth()
 //=====================================
 //MagicNumberSetting
 const PORT:Number = 9090;
-const VERSION:String = "2.0.0"
+const VERSION:String = "3.0.0"
 import { DateTime } from './function/DateFormat'
 const START_TIME:String = DateTime(new Date(Date.now() + (new Date().getTimezoneOffset() + (9 * 60) * 60000)))
 export { VERSION, START_TIME }
