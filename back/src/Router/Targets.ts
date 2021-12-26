@@ -1,7 +1,7 @@
 import { DB } from '../db/index'
 import { MessageResponse } from '../interface/MessageResponse'
 import { Router } from 'express'
-import { FindOptions } from 'sequelize'
+import { tokenAuth } from '../function/Auth'
 
 const TargetsRouter:Router = Router()
 
@@ -18,14 +18,15 @@ TargetsRouter.get('/', async(req, res) => {
     const limit = (req.query.limit == null ? 20 : Number(req.query.limit))
     const pages = (req.query.pages == null ? 1 : Number(req.query.pages))
     const offset = limit * (pages - 1)
-    let options:FindOptions = {
+    let options:any = {
         limit: limit,
-        offset: offset
+        offset: offset,
+        order: [
+            ['createdAt','DESC']
+        ]
     }
     if (req.query.userId != null) {
-        options.where = {
-            userId: req.query.userId
-        }
+        options.where.userId = req.query.userId
     }
 
     const Targets = await DB.Targets.findAll(options)
@@ -50,35 +51,51 @@ TargetsRouter.get('/:targetId', async(req, res) => {
     }
 })
 
+TargetsRouter.use(tokenAuth)
 TargetsRouter.post('/', async(req, res) => {
-    //本来は認証から受け取る
-    const userId = 0
-
-    if (req.body.title != null) {
-        const Data = {
-            userId: userId,
-            title: req.body.title
-        }
-        const Target = await DB.Targets.create(Data)
-
-        res.status(200).json(Target)
-    } else {
+    if (!req.body.title) {
         const resMes: MessageResponse = {
             status: "Error",
             message: "Not Enogth Property"
         }
         res.status(403).json(resMes)
+        return 0
     }
+    const Data = {
+        userId: req.uid,
+        title: req.body.title
+    }
+    const Target = await DB.Targets.create(Data)
+    res.status(200).json(Target)
 })
 TargetsRouter.delete('/:targetId', async(req, res) => {
-    if (req.params.targetId != null) {
-        const options = {
+    if (req.params.targetId == null) {
+        const resMes: MessageResponse = {
+            status: "Error",
+            message: "Not Enogth Property"
+        }
+        res.status(403).json(resMes)
+        return 0
+    }
+    const isTargets = await DB.Targets.findOne({
+        where: {
+            id: req.params.targetId
+        }
+    })
+    if (!isTargets) {
+        const resMes: MessageResponse = {
+            status: "Error",
+            message: "Not Found"
+        }
+        res.status(404).json(resMes)
+        return 0
+    }
+    if (isTargets.userId === req.uid) {
+        const dbRes = await DB.Targets.destroy({
             where: {
                 id: req.params.targetId
             }
-        }
-        const dbRes = await DB.Targets.destroy(options)
-
+        })
         if (dbRes) {
             const resMes: MessageResponse = {
                 status: "success",
@@ -88,16 +105,17 @@ TargetsRouter.delete('/:targetId', async(req, res) => {
         } else {
             const resMes: MessageResponse = {
                 status: "Error",
-                message: "Not Found"
+                message: "Unknown Error"
             }
-            res.status(404).json(resMes)
+            res.status(500).json(resMes)
         }
     } else {
         const resMes: MessageResponse = {
             status: "Error",
-            message: "Not Enogth Property"
+            message: "Not Enogth Authority"
         }
         res.status(403).json(resMes)
+        return 0
     }
 })
 //=====================================
