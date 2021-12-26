@@ -92,6 +92,8 @@
 </template>
 
 <script>
+import { signInWithPopup, GithubAuthProvider, getAuth, signOut } from '@firebase/auth'
+
 export default {
   name: 'App',
   data: () => ({
@@ -100,11 +102,24 @@ export default {
     links: [['mdi-home', 'タイムライン', 'Home'], ['mdi-bullseye-arrow', '目標', 'Target'], ['mdi-magnify', '検索', 'Search'], ['mdi-cog-outline', '設定', 'Setting'], ['mdi-wrench', 'システム', 'System']]
   }),
   methods: {
-    login: function () {
+    login: async function () {
       console.log('login')
+      const auth = getAuth()
+      const provider = new GithubAuthProvider()
+      await signInWithPopup(auth, provider)
+        .then((result) => {
+          this.$store.commit('setUser', result.user)
+          console.log('login success')
+        })
     },
-    logout: function () {
-      console.log('login')
+    logout: async function () {
+      console.log('logout')
+      const auth = getAuth()
+      await signOut(auth)
+        .then(() => {
+          this.$store.commit('deleteUser')
+          console.log('logout success')
+        })
     }
   }
 
