@@ -2,10 +2,10 @@ openapi: "3.0.0"
 info:
   title: Mylog-API(仮名)
   description: 自分の目標記録アプリ[Mylog]のシステムAPI
-  version: 1.0.0
+  version: 2.0.0
 servers:
-  - url: http://api.<domain>/v1
-    description: バージョン1.*.*系
+  - url: http://api.<domain>/v2
+    description: バージョン2.*.*系
 security:
   - ApiKeyAuth: []
 paths:
@@ -431,7 +431,12 @@ paths:
       description: 目標の一覧を配列で取得
       security:
         - {}
-      parameters: []
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: integer
+          description: 指定したユーザの目標に絞り込みます
       responses:
         '200':
           description: 目標データの配列
@@ -476,49 +481,6 @@ paths:
               example:
                 status: Error
                 message: Not Enogth Authority
-  /targets/{userId}:
-    get:
-      tags:
-        - targets
-      summary: ユーザの目標一覧取得
-      security:
-        - {}
-      parameters:
-        - name: userId
-          in: path
-          description: ユーザId
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 目標情報
-          content:
-            application/json:
-              schema:
-                type: array
-                items: 
-                  $ref: '#/components/schemas/Target'
-        '402':
-          description:
-            システムメッセージ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Not Enough Property
-        '404':
-          description:
-            システムメッセージ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Info
-                message: Not Found
   /targets/{targetId}:
     get:
       tags:
@@ -621,53 +583,19 @@ paths:
       summary: 行動の一覧
       security:
         - {}
-      parameters: []
-      responses:
-        '200':
-          description: 行動情報の配列
-          content:
-            application/json:
-              schema:
-                type: array
-                items: 
-                  $ref: '#/components/schemas/Log'
-  /logs/{userId}:
-    get:
-      tags:
-        - logs
-      summary: ユーザの行動一覧
-      security:
-        - {}
       parameters:
-        - name: userId
-          in: path
-          description: ユーザーid
-          required: true
+        - in: query
+          name: userId
           schema:
             type: integer
-      responses:
-        '200':
-          description: 行動情報の配列
-          content:
-            application/json:
-              schema:
-                type: array
-                items: 
-                  $ref: '#/components/schemas/Log'
-  /logs/{targetId}:
-    get:
-      tags:
-        - logs
-      summary: 目標の行動一覧
-      security:
-        - {}
-      parameters:
-        - name: targetId
-          in: path
-          description: 目標Id
-          required: true
+          description:
+            指定したユーザの行動に絞り込みます(他指定がある場合AND検索)
+        - in: query
+          name: targetId
           schema:
             type: integer
+          description:
+            指定した目標の行動に絞り込みます(他指定がある場合AND検索)
       responses:
         '200':
           description: 行動情報の配列
@@ -681,21 +609,18 @@ paths:
       tags:
         - logs
       summary: 行動を登録
-      parameters:
-        - name: targetId
-          in: path
-          description: 目標Id
-          required: true
-          schema:
-            type: integer
+      parameters: []
       requestBody:
         content:
           application/json:
             schema:
               type: object
               required:
+                - targetId
                 - title
               properties:
+                targetId:
+                  type: integer
                 title:
                   type: string
                 detail:
@@ -738,6 +663,26 @@ paths:
                 status: Error
                 message: Not Found
   /logs/{logId}:
+    get:
+      tags:
+        - logs
+      summary: 行動の取得
+      security:
+        - {}
+      parameters:
+        - name: logId
+          in: path
+          description: 行動Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 行動情報
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Log'
     delete:
       tags:
         - logs
