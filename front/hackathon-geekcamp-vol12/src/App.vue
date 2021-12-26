@@ -45,10 +45,34 @@
               <router-link :to="{name: links[4][2]}" class="signup-link">{{ links[4][1] }}</router-link>
             </v-list-item-title></v-list-item-content>
           </v-list-item>
-
-          <v-list-item>
+          <v-list-item v-if="$store.getters.isLogin">
             <v-list-item-content><v-list-item-title>
-              <router-link :to="{name: 'Login'}" class="signup-link">Login</router-link>
+              <v-btn
+                elevation="2"
+                color="red"
+                outlined
+                @click="logout"
+              >
+                <v-icon>
+                  mdi-logout-variant
+                </v-icon>
+                Logout
+              </v-btn>
+            </v-list-item-title></v-list-item-content>
+          </v-list-item>
+          <v-list-item v-else>
+            <v-list-item-content><v-list-item-title>
+              <v-btn
+                elevation="2"
+                color="primary"
+                outlined
+                @click="login"
+              >
+                <v-icon>
+                  mdi-github
+                </v-icon>
+                Login
+              </v-btn>
             </v-list-item-title></v-list-item-content>
           </v-list-item>
 
@@ -74,7 +98,15 @@ export default {
     id: 123,
     drawer: null,
     links: [['mdi-home', 'タイムライン', 'Home'], ['mdi-bullseye-arrow', '目標', 'Target'], ['mdi-magnify', '検索', 'Search'], ['mdi-cog-outline', '設定', 'Setting'], ['mdi-wrench', 'システム', 'System']]
-  })
+  }),
+  methods: {
+    login: function () {
+      console.log('login')
+    },
+    logout: function () {
+      console.log('login')
+    }
+  }
 
 }
 </script>
