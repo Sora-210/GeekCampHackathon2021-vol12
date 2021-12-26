@@ -2,10 +2,12 @@ openapi: "3.0.0"
 info:
   title: Mylog-API(仮名)
   description: 自分の目標記録アプリ[Mylog]のシステムAPI
-  version: 2.0.0
+  version: 3.0.0
 servers:
-  - url: http://api.<domain>/v2
-    description: バージョン2.*.*系
+  - url: https://mylog.sora210.dev/api
+    description: 本番環境
+  - url: https://dev.mylog.sora210.dev/api
+    description: 開発環境
 security:
   - ApiKeyAuth: []
 paths:
@@ -62,7 +64,21 @@ paths:
       description: Userを配列で返す
       security:
         - {}
-      parameters: []
+      parameters:
+        - in: query
+          name: limit
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 20
+          description: 取得するデータ数上限
+        - in: query
+          name: pages
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 1
+          description: 取得するデータのページ
       responses:
         '200':
           description: UserModelJsonの配列
@@ -250,179 +266,6 @@ paths:
               example:
                 status: Error
                 message: Not Found
-  /s/users:
-    get:
-      tags:
-        - security-user
-      summary: 自分のセキュリティユーザ情報
-      parameters: []
-      responses:
-        '200':
-          description: トークンからのユーザ情報
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SUser'
-        '403':
-          description:
-            権限不足
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Not Enogth Authority
-  /s/users/email:
-    patch:
-      tags:
-        - security-user
-      summary: メールアドレスの変更
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-      responses:
-        '200':
-          description: 更新後のユーザ情報
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SUser'
-        '402':
-          description:
-            プロパティ不十分
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Not Enogth Property
-        '403':
-          description:
-            権限不足
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Not Enogth Authority
-  /s/users/password:
-    patch:
-      tags:
-        - security-user
-      summary: パスワードの変更
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                oldPassword:
-                  type: string
-                newPassword:
-                  type: string
-      responses:
-        '200':
-          description: 更新後のユーザ情報
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SUser'
-        '402':
-          description:
-            プロパティ不十分
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Not Enogth Property
-        '403':
-          description:
-            権限不足
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Not Enogth Authority
-  /login:
-    post:
-      tags:
-        - login
-      summary: ログイン
-      security:
-        - {}
-      responses:
-        '200':
-          description: ログイン成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '401':
-          description: ログイン失敗
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Unauthorized
-    patch:
-      tags:
-        - login
-      summary: トークン更新
-      responses:
-        '200':
-          description: 更新成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '401':
-          description: 更新失敗
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Unauthorized
-  /logout:
-    delete:
-      tags:
-        - login
-      summary: ログアウト
-      responses:
-        '200':
-          description: ログアウト成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Success
-                message: Logouted
-        '401':
-          description: ログアウト失敗
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MessageResponse'
-              example:
-                status: Error
-                message: Unauthorized
-          
   /targets:
     get:
       tags:
@@ -434,9 +277,24 @@ paths:
       parameters:
         - in: query
           name: userId
+          allowEmptyValue: true
           schema:
             type: integer
           description: 指定したユーザの目標に絞り込みます
+        - in: query
+          name: limit
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 20
+          description: 取得するデータ数の上限
+        - in: query
+          name: pages
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 1
+          description: 取得するデータのページ
       responses:
         '200':
           description: 目標データの配列
@@ -596,6 +454,20 @@ paths:
             type: integer
           description:
             指定した目標の行動に絞り込みます(他指定がある場合AND検索)
+        - in: query
+          name: limit
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 20
+          description: 取得するデータ数の上限
+        - in: query
+          name: pages
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 1
+          description: 取得するデータのページ
       responses:
         '200':
           description: 行動情報の配列
@@ -748,16 +620,6 @@ components:
           type: string
         message:
           type: object
-    LoginResponse:
-      type: object
-      required:
-        - user
-        - token
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        token:
-          type: string
     User:
       type: object
       required:
@@ -767,43 +629,10 @@ components:
         - updatedAt
       properties:
         id:
-          type: integer
-          example: 0
+          type: string
         name:
           type: string
           example: 太郎
-        createdAt:
-          type: string
-          example: "2021-12-26"
-          format: date
-          pattern: "YYYY-MM-DD"
-        updatedAt:
-          type: string
-          example: "2021-12-26"
-          format: date
-          pattern: "YYYY-MM-DD"
-    SUser:
-      type: object
-      required:
-        - id
-        - name
-        - email
-        - password
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          type: integer
-          example: 0
-        name:
-          type: string
-          example: 太郎
-        email:
-          type: string
-        password:
-          type: string
-        token:
-          type: string
         createdAt:
           type: string
           example: "2021-12-26"
@@ -826,8 +655,7 @@ components:
           type: integer
           example: 0
         userId:
-          type: integer
-          example: 0
+          type: string
         title:
           type: string
           example: JavaScriptを勉強する
@@ -887,10 +715,6 @@ tags:
       システムに関するAPI群
   - name: users
     description: ユーザーに関するAPI群
-  - name: security-user
-    description: ユーザーに関するAPI群(セキュリティ系)
-  - name: login
-    description: ログインに関するAPI群
   - name: targets
     description: 目標に関するAPI群
   - name: logs
