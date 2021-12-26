@@ -1,6 +1,7 @@
 import express from 'express'
 import { json as BodyParserJson } from 'body-parser'
 import cors from 'cors'
+import { initializeApp } from 'firebase-admin/app'
 import { auth } from './db/index'
 //=====================================
 //DataBaseSetting
@@ -12,6 +13,11 @@ const VERSION:String = "2.0.0"
 import { DateTime } from './function/DateFormat'
 const START_TIME:String = DateTime(new Date(Date.now() + (new Date().getTimezoneOffset() + (9 * 60) * 60000)))
 export { VERSION, START_TIME }
+//=====================================
+//firebaseSetting
+initializeApp({
+    projectId: 'hackathon-mylog'
+})
 //=====================================
 //expressSetting
 const app:express.Express = express()
