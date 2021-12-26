@@ -1,12 +1,12 @@
 <template>
-  <v-app id="inspire">
+  <div>
     <!-- コンテンツ部分の記述 -->
     <v-container class="py-8 px-6" fluid>
       <v-row>
         <v-col>
-          <v-list  v-for="data in sampleData" :key="data.title" two-line>
-            <v-card elevation="2" outlined shaped>
-              <v-list-item :key="data.detail">
+          <v-list two-line>
+            <v-card v-for="data in sampleData" :key="data.detail" class="my-8" elevation="2" outlined shaped>
+              <v-list-item>
                 <v-list-item-avatar color="grey darken-1"></v-list-item-avatar>
 
                 <v-list-item-content>
@@ -14,14 +14,14 @@
                   <v-list-item-subtitle>UserID: {{ data.id }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
-              <v-card-text :class="[`text-h6`, active && `mb-4`]">{{ data.detail }}</v-card-text>
+              <v-card-text :class="[`text-h6`, `mb-4`]">{{ data.detail }}</v-card-text>
             </v-card>
             <v-divider inset></v-divider>
-            </v-list>
+          </v-list>
         </v-col>
       </v-row>
     </v-container>
-  </v-app>
+  </div>
 </template>
 
 <script>
