@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <!-- コンテンツ部分の記述 -->
     <v-container class="py-8 px-6" fluid>
+      <!-- 目標の説明 -->
+      <div :class="[`text-h5`, `black--text`]" v-text="'ログ'"></div>
+
+      <!-- 進捗パネルの表示をここに追加 -->
+
+      <!-- 投稿ログの表示 -->
       <v-row>
         <v-col>
           <v-list two-line>
@@ -21,11 +25,9 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
 </template>
 
 <script>
-
 export default {
   data: () => ({
     sampleData: [{
@@ -63,30 +65,7 @@ export default {
       'date': '2021-12-25',
       'createdAt': '2021-12-25',
       'updatedAt': '2021-12-26'
-    },
-    {
-      'id': 1,
-      'targetId': 0,
-      'title': 'User2',
-      'detail': 'test05',
-      'date': '2021-12-24',
-      'createdAt': '2021-12-24',
-      'updatedAt': '2021-12-24'
-    }],
-    drawer: null,
-    links: [[ 'mdi-inbox-arrow-down', 'Inbox' ], [ 'mdi-send', 'Send' ], [ 'mdi-delete', 'Trash' ], [ 'mdi-alert-octagon', 'Spam' ]],
-    date: ''
-  }),
-  mounted () {
-    this.load()
-  },
-  methods: {
-    load () {
-      /** ロード処理をここに記述 */
-      this.sampleData = this.sampleData.sort(function (a, b) {
-        return (a.date < b.date) ? -1 : 1
-      })
-    }
-  }
+    }]
+  })
 }
 </script>

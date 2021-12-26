@@ -67,7 +67,7 @@ export default {
   data: () => ({
     id: 123,
     drawer: null,
-    links: [['mdi-home', 'タイムライン', 'Top'], ['mdi-bullseye-arrow', '目標', 'Profile'], ['mdi-magnify', '検索', 'Search'], ['mdi-cog-outline', '設定', 'Setting'], ['mdi-wrench', 'システム', 'System']]
+    links: [['mdi-home', 'タイムライン', 'Top'], ['mdi-bullseye-arrow', '目標', 'Target'], ['mdi-magnify', '検索', 'Search'], ['mdi-cog-outline', '設定', 'Setting'], ['mdi-wrench', 'システム', 'System']]
   })
 
 }
