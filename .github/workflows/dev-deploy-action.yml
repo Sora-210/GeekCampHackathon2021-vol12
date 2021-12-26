@@ -20,5 +20,5 @@ jobs:
             HostName hackathonv12.sora210.dev
             User hackathonv12
             IdentityFile ~/.ssh/hackathonV12_id_rsa
-    - name: run deploy script
-      run: bash dev-actions.sh
+    - name: run remote script
+      run: ssh server "echo 'dev-deploy-action' >> log.txt"
