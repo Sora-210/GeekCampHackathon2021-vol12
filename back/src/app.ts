@@ -8,8 +8,8 @@ auth()
 //=====================================
 //MagicNumberSetting
 const PORT:Number = 9090;
-const VERSTION:String = "2.0.0"
-export { VERSTION }
+const VERSION:String = "2.0.0"
+export { VERSION }
 //=====================================
 //expressSetting
 const app:express.Express = express()
