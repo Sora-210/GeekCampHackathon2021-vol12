@@ -63,7 +63,47 @@
         <!-- トップメニューの記述 -->
         <v-app-bar color="deep-purple accent-4" dark>
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="overlay = !overlay"><v-icon>mdi-pencil</v-icon></v-btn>
         </v-app-bar>
+
+        <!-- 投稿フォーム -->
+        <v-overlay :value="overlay">
+          <v-card :align="'center'" color="blue darken-3" width="500">
+            <v-row :align="'center'" no-gutters>
+              <v-card-actions>
+                <v-btn icon @click="overlay = false; postContent=''; postDetail=''"><v-icon>mdi-keyboard-backspace</v-icon></v-btn>
+              </v-card-actions>
+              <v-spacer></v-spacer>
+              <v-card-title>あたらしく投稿する</v-card-title>
+              <v-spacer></v-spacer>
+              <v-card-actions>
+                <v-btn text color="blue lighten-5" class="text-h6" @click="postData()">投稿</v-btn>
+              </v-card-actions>
+            </v-row>
+            <v-textarea
+              class="mx-5"
+              filled
+              auto-grow
+              outlined
+              label="title"
+              rows="1"
+              row-height="40"
+              v-model="postTitle"
+            ></v-textarea>
+            <v-textarea
+              class="mx-5"
+              filled
+              auto-grow
+              outlined
+              label="Detail"
+              rows="4"
+              row-height="30"
+              shaped
+              v-model="postDetail"
+            ></v-textarea>
+          </v-card>
+        </v-overlay>
         <router-view/>
       </v-main>
 
@@ -73,11 +113,14 @@
 
 <script>
 import { signInWithPopup, GithubAuthProvider, getAuth, signOut } from '@firebase/auth'
+import axios from 'axios'
+const URL = 'https://dev.mylog.sora210.dev/api'
 
 export default {
   name: 'App',
   data: () => ({
     id: 123,
+    overlay: false,
     drawer: null,
     links: [
       ['mdi-home', 'タイムライン', 'Home'],
@@ -85,7 +128,10 @@ export default {
       ['mdi-account', 'ユーザ一覧', 'UserList'],
       ['mdi-magnify', '検索', 'Search'],
       ['mdi-cog-outline', '設定', 'Setting'],
-      ['mdi-wrench', 'システム', 'System']]
+      ['mdi-wrench', 'システム', 'System']
+    ],
+    postTitle: '',
+    postDetail: ''
   }),
   methods: {
     login: async function () {
@@ -111,6 +157,19 @@ export default {
       // トークン取得例
       const token = await getAuth().currentUser.getIdToken()
       console.log(token)
+    },
+    postData: async function () {
+      axios.defaults.headers.common['Authorization'] = await getAuth().currentUser.getIdToken()
+      axios.post(URL + '/logs', {
+        targetId: 0,
+        title: this.postTitle,
+        detail: this.postDetail
+      })
+        .then((res) => { console.log(res) })
+        .catch((error) => { console.log(error) })
+      this.postTitle = ''
+      this.postDetail = ''
+      this.overlay = false
     }
   }
 
