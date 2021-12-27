@@ -35,6 +35,22 @@ LogsRouter.get('/', async(req, res) => {
     const Logs = await DB.Logs.findAll(options)
     res.status(200).json(Logs)
 })
+LogsRouter.get('/:targetId/count', async(req, res) => {
+    let options:any = {
+        where: {
+            targetId: req.params.targetId
+        }
+    }
+    if (req.query.byDate) {
+        options.gruop = ["date"]
+    }
+    const Logs_count = await DB.Logs.count(options)
+
+    const resMsg = {
+        count: Logs_count
+    }
+    res.status(200).json(resMsg)
+})
 LogsRouter.get('/:logId', async(req, res) => {
     const options = {
         where: {

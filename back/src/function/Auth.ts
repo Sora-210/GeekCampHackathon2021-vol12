@@ -4,7 +4,7 @@ import { MessageResponse } from '../interface/MessageResponse'
 
 const tokenAuth = Router()
 
-tokenAuth.all('*', (req, res, next) => {
+tokenAuth.all('*', async (req, res, next) => {
     const auth:Auth = getAuth()
     const token:string = req.header('Authorization')!
     auth.verifyIdToken(token)

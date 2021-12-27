@@ -29,11 +29,11 @@ UsersRouter.get('/', async (req, res) => {
 UsersRouter.post('/', async (req, res) => {
     let data = {
         name: "",
-        uid: "",
+        id: "",
     }
     data.name = (req.body.name == null ? null : String(req.body.name))
-    data.uid = (req.body.uid == null ? null : String(req.body.uid))
-    if (data.name && data.uid) {
+    data.id = (req.body.id == null ? null : String(req.body.id))
+    if (data.name && data.id) {
         const dbRes = await DB.Users.create(data)
         res.status(200).json(dbRes)
     } else {
