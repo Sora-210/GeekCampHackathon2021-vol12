@@ -143,6 +143,23 @@ export default {
           this.$store.commit('setUser', result.user)
           console.log('login success')
         })
+      const uid = await getAuth().currentUser.uid
+      let flag = 0
+      await axios.get(URL + '/users/' + uid)
+        .then((res) => {
+          console.log('ok')
+        })
+        .catch((e) => {
+          flag = 1
+        })
+      if (flag) {
+        await axios.post(URL + '/users', {
+          id: uid,
+          name: uid
+        })
+          .then((res) => { console.log(res) })
+        flag = 0
+      }
     },
     logout: async function () {
       console.log('logout')
