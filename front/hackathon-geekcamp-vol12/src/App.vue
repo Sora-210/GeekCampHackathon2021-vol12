@@ -4,8 +4,13 @@
       <!-- サイドメニューの記述 -->
       <v-navigation-drawer v-model="drawer" app>
         <v-sheet color="grey lighten-4" class="pa-4">
-          <v-avatar class="mb-4" color="grey darken-1" size="64"></v-avatar>
-          <div>john@vuetifyjs.com</div>
+          <v-avatar class="mb-4" color="grey darken-1" size="64" >
+            <img
+              src='{{ $store.getters.user.photoURL }}'
+              alt="photo"
+            >
+          </v-avatar>
+          <div>{{ $store.getters.user.reloadUserInfo.screenName }}</div>
         </v-sheet>
 
         <v-divider></v-divider>
@@ -138,11 +143,9 @@ export default {
       console.log('login')
       const auth = getAuth()
       const provider = new GithubAuthProvider()
-      let user = null
       await signInWithPopup(auth, provider)
         .then((result) => {
           this.$store.commit('setUser', result.user)
-          user = result.user
           console.log('login success')
         })
       let flag = 0
@@ -155,8 +158,8 @@ export default {
         })
       if (flag) {
         await axios.post(URL + '/users', {
-          id: user.uid,
-          name: user.reloadUserInfo.screenName
+          id: this.$store.getters.user.uid,
+          name: this.$store.getters.user.reloadUserInfo.screenName
         })
           .then((res) => { console.log(res) })
         flag = 0
