@@ -138,13 +138,11 @@ export default {
       console.log('login')
       const auth = getAuth()
       const provider = new GithubAuthProvider()
-      let user = null
       await signInWithPopup(auth, provider)
         .then((result) => {
-          this.$store.commit('setUser', result.user)
-          user = result.user
           console.log('login success')
         })
+      const uid = getAuth().currentUser.uid
       let flag = 0
       await axios.get(URL + '/users/' + uid)
         .then((res) => {
@@ -155,8 +153,8 @@ export default {
         })
       if (flag) {
         await axios.post(URL + '/users', {
-          id: user.uid,
-          name: user.reloadUserInfo.screenName
+          id: this.$store.getters.user.uid,
+          name: this.$store.getters.user.reloadUserInfo.screenName
         })
           .then((res) => { console.log(res) })
         flag = 0
