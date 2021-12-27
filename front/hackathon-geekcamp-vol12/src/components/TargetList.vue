@@ -6,11 +6,11 @@
           <v-list-item v-for="target in targetList" :key="target.id">
             <router-link :to="{name: 'Target', params: {id: target.id}}" class="signup-link">
               <v-list-item-icon>
-                <v-icon v-text="target.userId"></v-icon>
+                <v-icon v-text="target.title"></v-icon>
               </v-list-item-icon>
 
               <v-list-item-content>
-                <v-list-item-title v-text="target.title"></v-list-item-title>
+                <v-list-item-title v-text="target.userId"></v-list-item-title>
               </v-list-item-content>
             </router-link>
           </v-list-item>
@@ -30,24 +30,7 @@ export default {
     model: 1
   }),
   mounted () {
-    // this.load()
-    this.targetList = [{
-      'id': 0,
-      'userId': 'test1',
-      'title': 'JavaScriptを勉強する',
-      'completed': false,
-      'createdAt': '2021-12-26',
-      'updatedAt': '2021-12-26'
-    },
-    {
-      'id': 1,
-      'userId': 'test2',
-      'title': 'Vueをマスターする',
-      'completed': false,
-      'createdAt': '2021-12-26',
-      'updatedAt': '2021-12-26'
-
-    }]
+    this.load()
   },
   methods: {
     load () {

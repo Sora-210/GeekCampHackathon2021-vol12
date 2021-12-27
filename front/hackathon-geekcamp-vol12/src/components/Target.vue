@@ -2,14 +2,15 @@
 <div>
   <!-- 目標の説明 -->
   <v-container class="py-8 px-6" fluid>
-      <div :class="[`text-h3`, `black--text`, `pb-5`]" v-text="'[目標名]'"></div>
-      <div :class="[`text-h6`, `black--text`]" v-text="'[目標の説明]'"></div>
+      <div :class="[`text-h3`, `black--text`, `pb-5`]" v-text="targetData.title"></div>
+      <div :class="[`text-body-1`, `black--text`]" v-text="'ID: ' + targetData.id"></div>
   </v-container>
 
   <!-- 進捗パネルの表示をここに追加 -->
   <div id="imageTable" align="center"></div>
 
-  <!-- 投稿ログの表示 -->
+  <!--
+    投稿ログの表示
   <v-container class="py-8 px-10" fluid>
     <div :class="[`text-h5`, `black--text`]" v-text="'ログ'"></div>
     <v-row>
@@ -31,56 +32,29 @@
       </v-col>
     </v-row>
   </v-container>
+  -->
 </div>
 </template>
 
 <script>
+import axios from 'axios'
+const URL = 'https://dev.mylog.sora210.dev/api'
+
 export default {
   data: () => ({
-    sampleData: [{
-      'id': 0,
-      'targetId': 0,
-      'title': 'User1',
-      'detail': 'test01',
-      'date': '2021-12-26',
-      'createdAt': '2021-12-26',
-      'updatedAt': '2021-12-26'
-    },
-    {
-      'id': 0,
-      'targetId': 0,
-      'title': 'User1',
-      'detail': 'test03',
-      'date': '2021-12-25',
-      'createdAt': '2021-12-25',
-      'updatedAt': '2021-12-26'
-    },
-    {
-      'id': 0,
-      'targetId': 0,
-      'title': 'User1',
-      'detail': 'test04',
-      'date': '2021-12-24',
-      'createdAt': '2021-12-24',
-      'updatedAt': '2021-12-24'
-    },
-    {
-      'id': 0,
-      'targetId': 0,
-      'title': 'User1',
-      'detail': 'test02',
-      'date': '2021-12-25',
-      'createdAt': '2021-12-25',
-      'updatedAt': '2021-12-26'
-    }]
+    id: '',
+    targetData: ''
   }),
   mounted () {
+    this.id = this.$route.params.id
+    this.load()
+
     // 画像の分割処理
     var sprite = { width: 64, height: 64 }
 
     var image = new Image()
     image.crossOrigin = 'Anonymous'
-    image.src = 'https://cdn.rawgit.com/nagadomi/otama/master/image/lena.jpg'
+    image.src = 'https://cdn.jsdelivr.net/npm/phina.js@0.2.3/assets/images/character/tomapiyo.png'
     image.onload = function () {
       var canvas = document.createElement('canvas')
       canvas.width = sprite.width
@@ -105,6 +79,13 @@ export default {
         }
         document.querySelector('#imageTable').appendChild(document.createElement('br'))
       }
+    }
+  },
+  methods: {
+    load () {
+      axios.get(URL + '/targets/' + this.id)
+        .then((response) => { this.targetData = response.data })
+        .catch((error) => { console.log(error) })
     }
   }
 }
