@@ -18,7 +18,7 @@ delete /users/:userId
 UsersRouter.get('/', async (req, res) => {
     const limit = (req.query.limit == null ? 20 : Number(req.query.limit))
     const pages = (req.query.pages == null ? 1 : Number(req.query.pages))
-    const offset = limit * (pages - 1) + 1
+    const offset = limit * (pages - 1)
     const options = {
         limit: limit,
         offset: offset
