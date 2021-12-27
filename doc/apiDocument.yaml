@@ -1,0 +1,721 @@
+openapi: "3.0.0"
+info:
+  title: Mylog-API(仮名)
+  description: 自分の目標記録アプリ[Mylog]のシステムAPI
+  version: 3.0.0
+servers:
+  - url: https://mylog.sora210.dev/api
+    description: 本番環境
+  - url: https://dev.mylog.sora210.dev/api
+    description: 開発環境
+security:
+  - ApiKeyAuth: []
+paths:
+  /version:
+    get:
+      tags:
+        - system
+      summary: apiバージョン
+      description: バージョンをメッセージで返す
+      parameters: []
+      security:
+        - {}
+      responses:
+        '200':
+          description:
+            version
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/MessageResponse'
+                example:
+                  status: ok
+                  message: "1.0.0"
+  /health:
+    get:
+      tags:
+        - system
+      summary: apiサーバの稼働状況
+      description: サーバー状態ををメッセージで返す
+      parameters: []
+      security:
+        - {}
+      responses:
+        '200':
+          description:
+            info
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/MessageResponse'
+                example:
+                  status: ok
+                  message:
+                    startTime: "YY/MM/DD hh:mm:ss"
+  /users:
+    get:
+      tags:
+        - users
+      summary: 登録済みユーザーの一覧
+      description: Userを配列で返す
+      security:
+        - {}
+      parameters:
+        - in: query
+          name: limit
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 20
+          description: 取得するデータ数上限
+        - in: query
+          name: pages
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 1
+          description: 取得するデータのページ
+      responses:
+        '200':
+          description: UserModelJsonの配列
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - users
+      summary: ユーザーの新規登録
+      description: ユーザーの作成
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: ユーザー名
+                  example: 太郎
+      responses:
+        '201':
+          description: 作成完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '402':
+          description:
+            プロパティ不十分
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Property
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: ユーザーidのユーザーモデルデータを取得
+      description: ユーザーモデルの取得
+      security:
+        - {}
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザー管理Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ユーザーモデルのJson
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description:
+            対象ユーザ無し
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Info
+                message: Not Found
+    patch:
+      tags:
+        - users
+      summary: ユーザーデータの更新
+      description: ユーザ情報を更新します。本人のみ可能です
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザー管理Id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: ユーザー名
+                  example: 太郎
+      responses:
+        '200':
+          description: 更新後のユーザーモデルデータ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '402':
+          description:
+            プロパティ不十分
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Property
+        '403':
+          description:
+            権限不足
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Authority
+        '404':
+          description:
+            該当するユーザデータ無し
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Found
+    delete:
+      tags:
+        - users
+      summary: ユーザーの削除
+      description:  ユーザの削除を行います。本人のみ可能です
+      parameters:
+        - name: userId
+          in: path
+          description: ユーザー管理ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 削除完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: success
+                message: Deleted
+        '402':
+          description:
+            プロパティ不十分
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Property
+        '403':
+          description:
+            権限不足
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Authority
+        '404':
+          description:
+            該当するユーザデータ無し
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Found
+  /targets:
+    get:
+      tags:
+        - targets
+      summary: 目標の一覧
+      description: 目標の一覧を配列で取得
+      security:
+        - {}
+      parameters:
+        - in: query
+          name: userId
+          allowEmptyValue: true
+          schema:
+            type: integer
+          description: 指定したユーザの目標に絞り込みます
+        - in: query
+          name: limit
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 20
+          description: 取得するデータ数の上限
+        - in: query
+          name: pages
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 1
+          description: 取得するデータのページ
+      responses:
+        '200':
+          description: 目標データの配列
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/Target'
+    post:
+      tags:
+        - targets
+      summary: 目標を新規作成
+      description:
+        目標の情報を登録し作成する
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 目標タイトル
+                  example: JavaScriptを勉強する
+      responses:
+        '201':
+          description:
+            作成した目標
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Target'
+        '403':
+          description:
+            権限不足
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Authority
+  /targets/{targetId}:
+    get:
+      tags:
+        - targets
+      summary: 目標のデータを取得
+      security:
+        - {}
+      parameters:
+        - name: targetId
+          in: path
+          description: 目標Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 目標情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Target'
+        '402':
+          description:
+            システムメッセージ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enough Property
+        '404':
+          description:
+            システムメッセージ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Info
+                message: Not Found
+    delete:
+      tags:
+        - targets
+      summary: 目標の削除
+      description:  目標の削除を行います。本人のみ可能です
+      parameters:
+        - name: targetId
+          in: path
+          description: 目標ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 削除完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: success
+                message: Deleted
+        '402':
+          description:
+            プロパティ不十分
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Property
+        '403':
+          description:
+            権限不足
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Authority
+        '404':
+          description:
+            該当するユーザデータ無し
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Found
+  /logs:
+    get:
+      tags:
+        - logs
+      summary: 行動の一覧
+      security:
+        - {}
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: integer
+          description:
+            指定したユーザの行動に絞り込みます(他指定がある場合AND検索)
+        - in: query
+          name: targetId
+          schema:
+            type: integer
+          description:
+            指定した目標の行動に絞り込みます(他指定がある場合AND検索)
+        - in: query
+          name: limit
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 20
+          description: 取得するデータ数の上限
+        - in: query
+          name: pages
+          allowEmptyValue: true
+          schema:
+            type: integer
+            default: 1
+          description: 取得するデータのページ
+      responses:
+        '200':
+          description: 行動情報の配列
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Log'
+    post:
+      tags:
+        - logs
+      summary: 行動を登録
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - targetId
+                - title
+              properties:
+                targetId:
+                  type: integer
+                title:
+                  type: string
+                detail:
+                  type: string
+      responses:
+        '200':
+          description: 行動情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Log"
+        '402':
+          description:
+            プロパティ不十分
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Property
+        '403':
+          description:
+            権限不足
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Authority
+        '404':
+          description:
+            該当する目標無し
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Found
+  /logs/{logId}:
+    get:
+      tags:
+        - logs
+      summary: 行動の取得
+      security:
+        - {}
+      parameters:
+        - name: logId
+          in: path
+          description: 行動Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 行動情報
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Log'
+    delete:
+      tags:
+        - logs
+      summary: 行動を削除
+      parameters:
+        - name: logId
+          in: path
+          description: 行動Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 削除完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: success
+                message: Deleted
+        '402':
+          description:
+            プロパティ不十分
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Property
+        '403':
+          description:
+            権限不足
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Enogth Authority
+        '404':
+          description:
+            該当する目標無し
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                status: Error
+                message: Not Found
+      
+
+components:
+  schemas:
+    MessageResponse:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+        message:
+          type: object
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: 太郎
+        createdAt:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+        updatedAt:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+    Target:
+      type: object
+      required:
+        - id
+        - userId
+        - title
+        - completed
+      properties:
+        id:
+          type: integer
+          example: 0
+        userId:
+          type: string
+        title:
+          type: string
+          example: JavaScriptを勉強する
+        completed:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+        updatedAt:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+        
+    Log:
+      type: object
+      required:
+        - id
+        - targetId
+        - title
+      properties:
+        id:
+          type: integer
+        targetId:
+          type: integer
+        title:
+          type: string
+        detail:
+          type: string
+        date:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+        createdAt:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+        updatedAt:
+          type: string
+          example: "2021-12-26"
+          format: date
+          pattern: "YYYY-MM-DD"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+          
+tags:
+  - name: system
+    description:
+      システムに関するAPI群
+  - name: users
+    description: ユーザーに関するAPI群
+  - name: targets
+    description: 目標に関するAPI群
+  - name: logs
+    description: 目標への行動ログに関するAPI群
