@@ -4,8 +4,10 @@
       <!-- サイドメニューの記述 -->
       <v-navigation-drawer v-model="drawer" app>
         <v-sheet color="grey lighten-4" class="pa-4">
-          <v-avatar class="mb-4" color="grey darken-1" size="64"></v-avatar>
-          <div>john@vuetifyjs.com</div>
+          <v-avatar class="mb-4" color="grey darken-1" size="64">
+            <v-img :src=userIcon></v-img>
+          </v-avatar>
+          <div>{{ userName }}</div>
         </v-sheet>
 
         <v-divider></v-divider>
@@ -122,6 +124,8 @@ export default {
     id: 123,
     overlay: false,
     drawer: null,
+    userName: 'none',
+    userIcon: '',
     links: [
       ['mdi-home', 'タイムライン', 'Home'],
       ['mdi-bullseye-arrow', '目標一覧', 'TargetList'],
@@ -133,6 +137,10 @@ export default {
     postTitle: '',
     postDetail: ''
   }),
+  mounted () {
+    this.userName = this.$store.getters.user.reloadUserInfo.screenName
+    this.userIcon = this.$store.getters.user.photoURL
+  },
   methods: {
     login: async function () {
       console.log('login')
@@ -159,6 +167,8 @@ export default {
           .then((res) => { console.log(res) })
         flag = 0
       }
+      this.userName = this.$store.getters.user.reloadUserInfo.screenName
+      this.userIcon = this.$store.getters.user.photoURL
     },
     logout: async function () {
       console.log('logout')
