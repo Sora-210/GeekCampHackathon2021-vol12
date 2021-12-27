@@ -83,7 +83,7 @@ LogsRouter.post('/', async(req, res) => {
     }
     const isTargetId = await DB.Targets.findOne({
         where: {
-            targetId: req.body.targetId
+            id: req.body.targetId
         }
     })
     if(!isTargetId) {
@@ -94,7 +94,7 @@ LogsRouter.post('/', async(req, res) => {
         res.status(404).json(resMes)
         return 0
     }
-    if(isTargetId.userId === req.uid) {
+    if(isTargetId.userId !== req.uid) {
         const resMes: MessageResponse = {
             status: "Error",
             message: "Not Enogth Authority"
