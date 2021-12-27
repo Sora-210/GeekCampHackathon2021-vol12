@@ -26,10 +26,10 @@ export default {
   },
   methods: {
     load () {
-      axios.get(URL + '/version', { headers: { Authorization: process.env.API_KEY } })
+      axios.get(URL + '/version')
         .then(response => { this.version = response.data.message })
         .catch((error) => { console.log(error) })
-      axios.get(URL + '/health', { headers: { Authorization: process.env.API_KEY } })
+      axios.get(URL + '/health')
         .then(response => { this.status = response.data.status })
         .catch((error) => { console.log(error) })
     }
