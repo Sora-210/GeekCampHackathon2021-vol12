@@ -23,7 +23,7 @@ const LogsTableQuery = {
             },
             date: {
                 allowNull: false,
-                type: DataTypes.DATE
+                type: DataTypes.DATEONLY
             },
             createdAt: {
                 allowNull: false,
