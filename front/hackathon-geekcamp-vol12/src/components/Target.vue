@@ -96,7 +96,7 @@ image.onload = function () {
         0, 0,
         sprite.width, sprite.height
       )
-      context.fillStyle = 'rgb( 0, 0, 0)';
+      context.fillStyle = 'rgb( 0, 0, 0)'
       context.globalAlpha = 1
 
       var spriteElement = new Image()
@@ -105,7 +105,7 @@ image.onload = function () {
 
       document.querySelector('#imageTable').appendChild(spriteElement)
     }
-    document.querySelector('#imageTable').appendChild(document.createElement("br"));
+    document.querySelector('#imageTable').appendChild(document.createElement('br'))
   }
 }
 </script>
