@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 import Top from '@/components/Top'
 import Home from '@/components/Home'
-import Login from '@/components/Login'
+import UserList from '@/components/UserList'
 import Profile from '@/components/Profile'
 import TargetList from '@/components/TargetList'
 import Target from '@/components/Target'
@@ -26,9 +26,9 @@ export default new Router({
       component: Home
     },
     {
-      path: '/login',
-      name: 'Login',
-      component: Login
+      path: '/user',
+      name: 'UserList',
+      component: UserList
     },
     {
       path: '/user:userId',
@@ -41,7 +41,7 @@ export default new Router({
       component: TargetList
     },
     {
-      path: '/target:userId',
+      path: '/target:id',
       name: 'Target',
       component: Target
     },

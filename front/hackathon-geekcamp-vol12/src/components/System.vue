@@ -13,6 +13,9 @@
 </template>
 
 <script>
+import axios from 'axios'
+const URL = 'https://dev.mylog.sora210.dev/api'
+
 export default {
   data: () => ({
     version: 'loading...',
@@ -23,16 +26,12 @@ export default {
   },
   methods: {
     load () {
-      /** ロードの処理をここに記述 */
-      function delay (n) {
-        return new Promise(function (resolve) {
-          setTimeout(resolve, n * 1000)
-        })
-      }
-
-      delay(1000)
-      this.version = '1.0.0'
-      this.status = 'ok'
+      axios.get(URL + '/version')
+        .then(response => { this.version = response.data.message })
+        .catch((error) => { console.log(error) })
+      axios.get(URL + '/health')
+        .then(response => { this.status = response.data.status })
+        .catch((error) => { console.log(error) })
     }
   }
 }
