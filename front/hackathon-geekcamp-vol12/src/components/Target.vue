@@ -73,39 +73,40 @@ export default {
       'createdAt': '2021-12-25',
       'updatedAt': '2021-12-26'
     }]
-  })
-}
+  }),
+  mounted () {
+    // 画像の分割処理
+    var sprite = { width: 64, height: 64 }
 
-// 画像の分割処理
-var sprite = { width: 64, height: 64 }
+    var image = new Image()
+    image.crossOrigin = 'Anonymous'
+    image.src = 'https://cdn.rawgit.com/nagadomi/otama/master/image/lena.jpg'
+    image.onload = function () {
+      var canvas = document.createElement('canvas')
+      canvas.width = sprite.width
+      canvas.height = sprite.height
 
-var image = new Image()
-image.crossOrigin = 'Anonymous'
-image.src = 'https://cdn.rawgit.com/nagadomi/otama/master/image/lena.jpg'
-image.onload = function () {
-  var canvas = document.createElement('canvas')
-  canvas.width = sprite.width
-  canvas.height = sprite.height
+      var context = canvas.getContext('2d')
+      for (var i = 0; i * sprite.height < image.height; i++) {
+        for (var j = 0; j * sprite.width < image.width; j++) {
+          context.drawImage(
+            image, j * sprite.width, i * sprite.height,
+            sprite.width, sprite.height,
+            0, 0,
+            sprite.width, sprite.height
+          )
+          context.globalAlpha = 1
 
-  var context = canvas.getContext('2d')
-  for (var i = 0; i * sprite.height < image.height; i++) {
-    for (var j = 0; j * sprite.width < image.width; j++) {
-      context.drawImage(
-        image, j * sprite.width, i * sprite.height,
-        sprite.width, sprite.height,
-        0, 0,
-        sprite.width, sprite.height
-      )
-      context.fillStyle = 'rgb( 0, 0, 0)'
-      context.globalAlpha = 1
+          var spriteElement = new Image()
+          spriteElement.src = canvas.toDataURL()
+          spriteElement.style.margin = '5px'
 
-      var spriteElement = new Image()
-      spriteElement.src = canvas.toDataURL()
-      spriteElement.style.margin = '10px'
-
-      document.querySelector('#imageTable').appendChild(spriteElement)
+          document.querySelector('#imageTable').appendChild(spriteElement)
+        }
+        document.querySelector('#imageTable').appendChild(document.createElement('br'))
+      }
     }
-    document.querySelector('#imageTable').appendChild(document.createElement('br'))
   }
 }
+
 </script>

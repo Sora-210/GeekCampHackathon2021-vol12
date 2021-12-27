@@ -5,7 +5,7 @@
       <v-row>
         <v-col>
           <v-list two-line>
-            <v-card v-for="data in sampleData" :key="data.detail" class="my-8" elevation="2" outlined shaped>
+            <v-card v-for="data in postData" :key="data.detail" class="my-8" elevation="2" outlined shaped>
               <v-list-item>
                 <v-list-item-avatar color="grey darken-1"></v-list-item-avatar>
 
@@ -25,9 +25,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+const URL = 'https://dev.mylog.sora210.dev/api'
 
 export default {
   data: () => ({
+    postData: '',
     sampleData: [{
       'id': 0,
       'targetId': 0,
@@ -73,8 +76,6 @@ export default {
       'createdAt': '2021-12-24',
       'updatedAt': '2021-12-24'
     }],
-    drawer: null,
-    links: [[ 'mdi-inbox-arrow-down', 'Inbox' ], [ 'mdi-send', 'Send' ], [ 'mdi-delete', 'Trash' ], [ 'mdi-alert-octagon', 'Spam' ]],
     date: ''
   }),
   mounted () {
@@ -82,6 +83,10 @@ export default {
   },
   methods: {
     load () {
+      axios.get(URL + '/logs')
+        .then(response => { this.postData = response.data })
+        .catch((error) => { console.log(error) })
+
       /** ロード処理をここに記述 */
       this.sampleData = this.sampleData.sort(function (a, b) {
         return (a.date < b.date) ? -1 : 1
