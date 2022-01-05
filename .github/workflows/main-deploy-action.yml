@@ -1,0 +1,25 @@
+name: mainDeploy
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        name: hackathonV12_id_rsa
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+        config: |
+          Host server
+            HostName hackathonv12.sora210.dev
+            User hackathonv12
+            IdentityFile ~/.ssh/hackathonV12_id_rsa
+    - name: run remote deploy script
+      run: |
+        ssh server "cd main/hackathon_geekcamp_vol12 && git checkout main && git pull origin main && docker-compose -f docker-compose.main.yml build && docker-compose -f docker-compose.main.yml down && docker-compose -f docker-compose.main.yml up -d"
